@@ -1,146 +1,211 @@
-﻿# Java Core (семинары)
+# Java Core (семинары)
 
-![picture for project](https://raw.githubusercontent.com/Terekhov-A-S/Java_core_seminar5/main/src/main/resources/Java_core.jpg)
-
-[к решению 1 ЗАДАЧИ](https://github.com/Terekhov-A-S/Java_core_seminar5/tree/main#задача-1)  ||  [к решению 2 ЗАДАЧИ](https://github.com/Terekhov-A-S/Java_core_seminar5/tree/main#решение-1)  ||  [перейти в папку Java](https://github.com/Terekhov-A-S/Java_core_seminar5/tree/main/src/main/java)
-
+## Урок 6. Классы и объекты
 
 ### Задача 1.
 
-Написать функцию, создающую резервную копию всех файлов в директории(без поддиректорий) во вновь созданную папку ./backup
+Написать прототип компаратора - метод внутри класса сотрудника, сравнивающий две даты, представленные в виде трёх чисел гггг-мм-дд, без использования условного оператора.
 
 #### Решение
 
-Для работы с файлами и директориями будем использовать пакеты java.nio.file и java.io. Создаем класс BackupUtility с необходимыми методами.
-Здесь "./source" и "./backup" это путь папки, откуда будем делать копию и путь папки куда будем копировать.
+Для этого можно использовать класс LocalDate из пакета java.time, который предоставляет удобные методы для работы с датами. Вот пример прототипа компаратора внутри класса сотрудника:
+
+<details>
+
+  <summary>Нажмите, чтобы открыть код</summary>
 
 ```java
-import java.io.IOException;
-import java.nio.file.*;
+package ru.gb;
 
-public class BackupUtility {
+import java.time.LocalDate;
+import java.util.Comparator;
 
-    public static void main(String[] args) {
-        try {
-            createBackup("./source", "./backup");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+public class Employees {
+    private String surname;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+    private String position;
+    private double salary;
+
+    public Employees(String surname, String firstName, String lastName, LocalDate birthDate, String position, double salary) {
+        this.surname = surname;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.position = position;
+        this.salary = salary;
     }
 
-    public static void createBackup(String sourceDir, String backupDir) throws IOException {
-        Path sourcePath = Paths.get(sourceDir);
-        Path backupPath = Paths.get(backupDir);
-
-        if (!Files.exists(backupPath)) {
-            Files.createDirectories(backupPath);
-        }
-
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourcePath)) {
-            for (Path entry : stream) {
-                if (Files.isRegularFile(entry)) {
-                    copyFile(entry, backupPath.resolve(entry.getFileName()));
-                }
-            }
-        }
+    public java.lang.String getSurname() {
+        return surname;
     }
 
-    private static void copyFile(Path source, Path destination) throws IOException {
-        Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+    public void setSurname(java.lang.String surname) {
+        this.surname = surname;
     }
+
+    public java.lang.String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(java.lang.String firstName) {
+        this.firstName = firstName;
+    }
+
+    public java.lang.String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(java.lang.String lastName) {
+        this.lastName = lastName;
+    }
+
+    public java.time.LocalDate getBirthday() {
+        return birthDate;
+    }
+
+    public void setBirthDate(java.time.LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public java.lang.String getPosition() {
+        return position;
+    }
+
+    public void setPosition(java.lang.String position) {
+        this.position = position;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    
+    // Прототип компаратора для сравнения двух дат рождения сотрудников
+    public static Comparator<Employees> birthDateComparator() {
+        return Comparator.comparing(employee -> employee.birthDate);
+    }
+
 }
-
 ```
 
-В нашем конкретном случае, для проверки работоспособности, будем использовать вместо "./source" путь "."
-В результате выполнения нашего кода в корне будет создана директория с именем ["backup"](https://github.com/Terekhov-A-S/Java_core_seminar5/tree/main/backup)
+</details>
 
-![Backup_folder](https://raw.githubusercontent.com/Terekhov-A-S/Java_core_seminar5/main/src/main/resources/Backup.png)
+Здесь birthDateComparator() возвращает компаратор, который сравнивает сотрудников по их дате рождения. Используя Comparator.comparing(), мы избегаем использования условных операторов, так как он самостоятельно сравнивает даты.
 
 ---
 
 
 ### Задача 2.
 
-Предположить, что числа в исходном массиве из 9 элементов имеют диапазон [0, 3], и представляют собой, например, 
-состояния ячеек поля для игры в крестикинолики, где 0 – это пустое поле, 1 – это поле с крестиком, 2 – это поле с ноликом, 3 – резервное значение. 
-Такое предположение позволит хранить в одном числе типа int всё поле 3х3. Записать в файл 9 значений так, чтобы они заняли три байта.
+Опишите класс руководителя, наследник от сотрудника. Перенесите статический метод повышения зарплаты в класс руководителя, модифицируйте метод таким образом, чтобы он мог поднять заработную плату всем, кроме руководителей. В основной программе создайте руководителя и поместите его в общий массив сотрудников. Повысьте зарплату всем сотрудникам и проследите, чтобы зарплата руководителя не повысилась.
 
 #### Решение
 
-Для хранения 9 значений в трех байтах, мы можем использовать тип данных byte. 
-Каждый элемент массива будет представлять собой один байт. Значения [0, 3] легко умещаются в диапазон значений типа byte.
-Создаем класс WriteToFile, в котором инициализируем массив с необходимыми значениями.
+Давайте добавим класс руководителя (Manager), который будет наследоваться от класса Employee. В этом классе мы определим статический метод для повышения зарплаты, учитывая условие, что зарплата руководителя не должна повышаться.
+
+<details>
+
+  <summary>Нажмите, чтобы открыть код</summary>
 
 ```java
-import java.io.*;
+package ru.gb;
 
-public class WriteToFile {
+import java.time.LocalDate;
 
-    public static void main(String[] args) {
-        byte[] gameBoard = {1, 2, 0, 3, 2, 1, 0, 3, 2};
+public class Manager extends Employees {
 
-        try (DataOutputStream outputStream = new DataOutputStream(new FileOutputStream("tic-tac-toe_board.dat"))) {
-            for (byte value : gameBoard) {
-                outputStream.writeByte(value);
+    // Конструктор класса Manager
+    public Manager(String surname, String firstName, String lastName, LocalDate birthDate, String position, double salary) {
+        super(surname, firstName, lastName, birthDate, position, salary);
+    }
+
+    // Статический метод для повышения зарплаты
+    public static void increaseSalary(Employees[] employees, double percentage) {
+        for (Employees employee : employees) {
+            if (!(employee instanceof Manager)) {
+                double currentSalary = employee.getSalary();
+                double newSalary = currentSalary * (1 + percentage / 100);
+                employee.setSalary(newSalary);
             }
-            System.out.println("Данные успешно записаны в файл.");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    }
+
+}
+```
+</details>
+
+В этом примере мы добавили метод increaseSalary в класс Manager, который увеличивает зарплату для всех сотрудников, кроме руководителей. Также в основной программе мы создали руководителя и добавили его в массив сотрудников, затем повысили зарплату всем сотрудникам и вывели результат. Зарплата руководителя осталась неизменной.
+
+<details>
+
+<summary>Нажмите, чтобы открыть скриншот проверки</summary>
+
+</details>
+
+---
+
+
+### Дополнительно:
+
+Имеется список студентов. Каждый студент имеет имя, список оценок и специальность.
+Найдите первых 5 студентов специальности "Информатика" со средним баллом выше 4.5, отсортированных по убыванию среднего балла.
+В решении не использовать циклы! **Только StreamAPI**
+
+
+> ```java
+> class Student {
+>     private String name;
+>     private List<Double> grades;
+>     private String specialty;
+> 
+>         public double getAverageGrade() {...}
+> 
+> }
+> ```
+
+
+#### Решение
+
+Используя Stream API, мы можем легко выполнить это задание. Давайте создадим список студентов и применим необходимые операции:
+
+<details>
+
+  <summary>Нажмите, чтобы открыть код</summary>
+
+```java
+package ru.gb;
+
+import java.util.List;
+
+public class Student {
+    private String name;
+    private List<Double> grades;
+    private String specialty;
+
+    public Student(String name, List<Double> grades, String specialty) {
+        this.name = name;
+        this.grades = grades;
+        this.specialty = specialty;
+    }
+
+    public double getAverageGrade() {
+        return grades.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSpecialty() {
+        return specialty;
     }
 }
 
-```
-Этот код создает массив gameBoard и записывает его значения в файл "tic-tac-toe_board.dat" с использованием DataOutputStream. 
-Обращаем внимание, что значения [0, 3] на самом деле представляют собой байты, и мы сами можем декодировать их при необходимости.
-
-![Size_for_tic-tac-toe_board](https://raw.githubusercontent.com/Terekhov-A-S/Java_core_seminar5/main/src/main/resources/size_for_tic-tac-toe_board.png)
-
-Теперь каждое значение записывается как байт, и всего 9 значений займут 9 байт, что соответствует требованиям задачи. 
 
 
-Так же создадим класс с методом, для корректного считывания байтов из файла с использованием DataInputStream:
-
-```java
-import java.io.*;
-
-public class ReadFromFile {
-
-    public static void main(String[] args) {
-        try {
-            byte[] gameBoard = readGameBoard("tic-tac-toe_board.dat");
-            printGameBoard(gameBoard);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static byte[] readGameBoard(String filename) throws IOException {
-        try (DataInputStream inputStream = new DataInputStream(new FileInputStream(filename))) {
-            byte[] gameBoard = new byte[9];
-            for (int i = 0; i < 9; i++) {
-                gameBoard[i] = inputStream.readByte();
-            }
-            return gameBoard;
-        }
-    }
-
-    public static void printGameBoard(byte[] gameBoard) {
-        System.out.println("Считанные значения из файла:");
-        for (byte value : gameBoard) {
-            System.out.println(value);
-        }
-    }
-}
-
-```
-
-Этот код использует DataInputStream для считывания байтов из файла "tic-tac-toe_board.dat" и затем выводит считанные значения на экран. 
-Обращаем внимание, что при чтении байтов необходимо обработать исключение IOException.
-
-Использование формата .dat в данном случае связано с тем, что мы сохраняем бинарные данные (байты) в файле. 
-Расширение файла не является строгим требованием, и можно использовать другие расширения в зависимости от конкретных потребностей проекта. 
-Однако расширение .dat часто ассоциируется с файлами данных в бинарном формате.
-
-В данном контексте, .dat может быть использован как сокращение от "data" (данные) и служить для обозначения файлов, содержащих бинарные данные. Это удобно для самопонятности и часто используется в программировании для подобных файлов.
